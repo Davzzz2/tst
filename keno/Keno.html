@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keno Assistant</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            background-color: black;
+            color: #ecf0f1;
+            margin: 0;
+        }
+
+        .header-links {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            padding: 20px 0;
+            background-color: black;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        .header-links a {
+            padding: 15px 25px;
+            border: 2px solid white;
+            border-radius: 10px;
+            background-color: black;
+            color: white;
+            text-decoration: none;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            position: relative;
+        }
+
+        .header-links a:hover {
+            background-color: white;
+            color: black;
+        }
+
+        .announcement {
+            margin-top: 80px;
+            padding: 20px 0;
+            font-size: 2em;
+            font-weight: bold;
+            color: #ecf0f1;
+            text-align: center;
+            width: 100%;
+            background-color: black;
+            border-radius: 10px;
+        }
+
+        .container {
+            text-align: center;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .footer {
+            margin-top: auto;
+            padding: 20px 0;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #ecf0f1;
+            text-align: center;
+            width: 100%;
+            background-color: black;
+        }
+
+        .header {
+            display: inline-block;
+            padding: 10px 20px;
+            border: 2px solid white;
+            border-radius: 10px;
+            background-color: black;
+            color: white;
+            margin-top: 20px;
+            font-size: 2em; /* Reduced size */
+        }
+
+        /* Keno board and controls styling */
+        .main-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .controls-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .bet-container {
+            background-color: #333;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 220px;
+        }
+
+        .bet-container label {
+            font-size: 14px;
+            color: #ccc;
+            margin-bottom: 10px;
+        }
+
+        .bet-amount-group {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .bet-amount-input {
+            background-color: #222;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid white;
+            width: 100%;
+            font-size: 16px;
+            text-align: right;
+        }
+
+        .bet-amount-buttons {
+            display: flex;
+            gap: 10px;
+            margin-left: 10px;
+        }
+
+        .bet-button {
+            background-color: #444;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid white;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .bet-button:hover {
+            background-color: white;
+            color: #000;
+        }
+
+        .risk-select {
+            background-color: #222;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid white;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+
+        .tile-selection-group {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .tile-selection-input {
+            background-color: #222;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid white;
+            font-size: 16px;
+            text-align: right;
+        }
+
+        .tile-selection-button {
+            background-color: #444;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: 1px solid white;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+            width: 100%;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .tile-selection-button:hover {
+            background-color: white;
+            color: #000;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 10px;
+            text-align: center;
+        }
+
+        .tile-button {
+            width: 80px;
+            height: 80px;
+            border: none;
+            border-radius: 10px;
+            background-color: #444;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0.3em 0.3em 0.45em rgba(0, 0, 0, 0.5);
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .tile-button:hover {
+            background-color: white;
+            color: #000;
+            transform: translateY(-2px);
+        }
+
+        .selected {
+            background-color: purple !important;
+        }
+
+        .multiplier-box {
+            background-color: #222;
+            border-radius: 10px;
+            padding: 10px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            border: 1px solid white;
+        }
+
+        .multiplier-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: #444;
+            border-radius: 6px;
+            padding: 5px;
+            flex-grow: 1;
+            position: relative;
+            border: 1px solid white;
+        }
+
+        .multiplier-value {
+            background-color: #222;
+            color: white;
+            border-radius: 4px;
+            padding: 4px;
+            font-size: 12px;
+            text-align: center;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .multiplier-label {
+            font-size: 12px;
+            color: #ccc;
+            margin-top: 3px;
+            text-align: center;
+            width: 100%;
+        }
+
+        /* Tooltip for multipliers */
+        .tooltip {
+            visibility: hidden;
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 5px;
+            border-radius: 6px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%; /* Position the tooltip above the multiplier */
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .multiplier-item:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .tooltip::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #333 transparent transparent transparent;
+        }
+    </style>
+</head>
+<body>
+    <div class="header-links">
+        <a href="https://www.youtube.com/@imenjayy" target="_blank">Enjayy's Youtube</a>
+        <a href="https://discord.gg/enjayy" target="_blank">Enjayy's Discord</a>
+        <a href="http://kick.com/enjayy" target="_blank">
+            Enjayy's Kick
+            <span id="live-status-text">LIVE</span>
+        </a>
+        <a href="http://stake.com/?c=penny" target="_blank">Code PENNY on Stake</a>
+    </div>
+
+    <div class="announcement">
+        <strong>Updates Posted in Discord</strong>
+    </div>
+
+    <div class="container">
+        <h1 class="header">Keno Assistant</h1>
+        <div class="wrapper">
+            <div class="main-container">
+                <div class="controls-container">
+                    <div class="bet-container">
+                        <label for="bet-amount">Bet Amount</label>
+                        <div class="bet-amount-group">
+                            <input type="number" id="bet-amount" class="bet-amount-input" value="1.00" min="0.01" step="0.01">
+                            <div class="bet-amount-buttons">
+                                <button class="bet-button" id="half-bet">½</button>
+                                <button class="bet-button" id="double-bet">2x</button>
+                            </div>
+                        </div>
+
+                        <label for="risk-level">Risk</label>
+                        <select id="risk-level" class="risk-select">
+                            <option value="classic" selected>Classic</option>
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                        </select>
+
+                        <div class="tile-selection-group">
+                            <label for="tile-selection">Number of Tiles to Select</label>
+                            <input type="number" id="tile-selection" class="tile-selection-input" value="10" min="1" max="10">
+                            <button class="tile-selection-button" id="random-choose">Select Tiles</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field-container">
+                    <div class="grid-container">
+                        <!-- First Row -->
+                        <button class="tile-button">1</button>
+                        <button class="tile-button">2</button>
+                        <button class="tile-button">3</button>
+                        <button class="tile-button">4</button>
+                        <button class="tile-button">5</button>
+                        <button class="tile-button">6</button>
+                        <button class="tile-button">7</button>
+                        <button class="tile-button">8</button>
+
+                        <!-- Second Row -->
+                        <button class="tile-button">9</button>
+                        <button class="tile-button">10</button>
+                        <button class="tile-button">11</button>
+                        <button class="tile-button">12</button>
+                        <button class="tile-button">13</button>
+                        <button class="tile-button">14</button>
+                        <button class="tile-button">15</button>
+                        <button class="tile-button">16</button>
+
+                        <!-- Third Row -->
+                        <button class="tile-button">17</button>
+                        <button class="tile-button">18</button>
+                        <button class="tile-button">19</button>
+                        <button class="tile-button">20</button>
+                        <button class="tile-button">21</button>
+                        <button class="tile-button">22</button>
+                        <button class="tile-button">23</button>
+                        <button class="tile-button">24</button>
+
+                        <!-- Fourth Row -->
+                        <button class="tile-button">25</button>
+                        <button class="tile-button">26</button>
+                        <button class="tile-button">27</button>
+                        <button class="tile-button">28</button>
+                        <button class="tile-button">29</button>
+                        <button class="tile-button">30</button>
+                        <button class="tile-button">31</button>
+                        <button class="tile-button">32</button>
+
+                        <!-- Fifth Row -->
+                        <button class="tile-button">33</button>
+                        <button class="tile-button">34</button>
+                        <button class="tile-button">35</button>
+                        <button class="tile-button">36</button>
+                        <button class="tile-button">37</button>
+                        <button class="tile-button">38</button>
+                        <button class="tile-button">39</button>
+                        <button class="tile-button">40</button>
+                    </div>
+
+                    <div class="multiplier-box" id="multiplier-box">
+                        <!-- Multiplier values and tile counts will be dynamically added here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        Made by Dave
+    </div>
+
+    <script>
+        const buttons = document.querySelectorAll('.tile-button');
+        const riskLevelSelect = document.getElementById('risk-level');
+        let selectedCount = 0;
+        const maxSelections = 10;
+
+        const multipliers = {
+            "classic": [
+                [0, 3.96],
+                [0, 1.9, 4.5],
+                [0, 1, 3.1, 10.4],
+                [0, 0.8, 1.8, 5, 22.5],
+                [0, 0.25, 1.4, 4.1, 16.5, 36],
+                [0, 0, 1, 3.68, 7, 16.5, 40],
+                [0, 0, 0.47, 3, 4.5, 14, 31, 60],
+                [0, 0, 0, 2.2, 4, 13, 22, 55, 70],
+                [0, 0, 0, 1.55, 3, 8, 15, 44, 60, 85],
+                [0, 0, 0, 1.4, 2.25, 4.5, 8, 17, 50, 80, 100]
+            ],
+            "low": [
+                [0, 0.7],
+                [0, 0, 1.85],
+                [0, 1.1, 1.38, 26],
+                [0, 0, 2.2, 7.9, 90],
+                [0, 0, 1.5, 4.2, 13, 300],
+                [0, 0, 1.1, 2, 6.2, 100, 700],
+                [0, 0, 1.1, 1.6, 3.5, 15, 225, 700],
+                [0, 0, 1.1, 1.5, 2, 5.5, 39, 100, 800],
+                [0, 0, 1.1, 1.3, 1.7, 2.5, 7.5, 50, 250, 1000],
+                [0, 0, 1.1, 1.2, 1.3, 1.8, 3.5, 13, 50, 250, 1000]
+            ],
+            "medium": [
+                [0, 0.4],
+                [0, 1.8, 5.1],
+                [0, 0, 2.8, 50],
+                [0, 0, 1.7, 10, 100],
+                [0, 0, 1.4, 4, 14, 390],
+                [0, 0, 0, 3, 9, 180, 710],
+                [0, 0, 0, 2, 7, 30, 400, 800],
+                [0, 0, 0, 2, 4, 11, 67, 400, 900],
+                [0, 0, 0, 2, 2.5, 5, 15, 100, 500, 1000],
+                [0, 0, 0, 1.6, 2, 4, 7, 26, 100, 500, 1000]
+            ],
+            "high": [
+                [0, 3.96],
+                [0, 0, 17.1],
+                [0, 0, 0, 81.5],
+                [0, 0, 0, 10, 259],
+                [0, 0, 0, 4.5, 48, 450],
+                [0, 0, 0, 0, 11, 350, 710],
+                [0, 0, 0, 0, 7, 90, 400, 800],
+                [0, 0, 0, 0, 5, 20, 270, 600, 900],
+                [0, 0, 0, 0, 4, 11, 56, 500, 800, 1000],
+                [0, 0, 0, 0, 3.5, 8, 13, 63, 500, 800, 1000]
+            ]
+        };
+
+        function updateMultipliers() {
+            const multiplierBox = document.getElementById('multiplier-box');
+            multiplierBox.innerHTML = '';
+            const riskLevel = riskLevelSelect.value;
+            const currentMultipliers = multipliers[riskLevel][selectedCount - 1] || [];
+
+            currentMultipliers.forEach((multiplier, index) => {
+                const multiplierItem = document.createElement('div');
+                multiplierItem.classList.add('multiplier-item');
+
+                const multiplierValue = document.createElement('div');
+                multiplierValue.classList.add('multiplier-value');
+                multiplierValue.textContent = `${multiplier.toFixed(2)}x`;
+
+                const multiplierLabel = document.createElement('div');
+                multiplierLabel.classList.add('multiplier-label');
+                multiplierLabel.textContent = `${index}x`;
+
+                // Tooltip creation
+                const tooltip = document.createElement('div');
+                tooltip.classList.add('tooltip');
+                tooltip.textContent = `Payout: ${(multiplier * parseFloat(document.getElementById('bet-amount').value)).toFixed(2)}\nProfit: ${((multiplier - 1) * parseFloat(document.getElementById('bet-amount').value)).toFixed(2)}`;
+
+                multiplierItem.appendChild(multiplierValue);
+                multiplierItem.appendChild(multiplierLabel);
+                multiplierItem.appendChild(tooltip); // Add the tooltip to the multiplier item
+                multiplierBox.appendChild(multiplierItem);
+            });
+        }
+
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                if (!button.classList.contains('selected')) {
+                    if (selectedCount < maxSelections) {
+                        button.classList.add('selected');
+                        selectedCount++;
+                        updateMultipliers();
+                    }
+                } else {
+                    button.classList.remove('selected');
+                    selectedCount--;
+                    updateMultipliers();
+                }
+            });
+        });
+
+        // Update multipliers when risk level changes
+        riskLevelSelect.addEventListener('change', updateMultipliers);
+
+        // Double or halve the bet amount
+        document.getElementById('half-bet').addEventListener('click', () => {
+            const betAmountInput = document.getElementById('bet-amount');
+            let currentBet = parseFloat(betAmountInput.value);
+            currentBet = Math.max(currentBet / 2, 0.01);
+            betAmountInput.value = currentBet.toFixed(2);
+            updateMultipliers(); // Update multipliers with new bet amount
+        });
+
+        document.getElementById('double-bet').addEventListener('click', () => {
+            const betAmountInput = document.getElementById('bet-amount');
+            let currentBet = parseFloat(betAmountInput.value);
+            currentBet = currentBet * 2;
+            betAmountInput.value = currentBet.toFixed(2);
+            updateMultipliers(); // Update multipliers with new bet amount
+        });
+
+        // Randomly choose tiles
+        document.getElementById('random-choose').addEventListener('click', () => {
+            const numberOfTiles = parseInt(document.getElementById('tile-selection').value);
+            // Deselect all tiles first
+            buttons.forEach(button => button.classList.remove('selected'));
+            selectedCount = 0;
+
+            // Randomly select the specified number of tiles
+            while (selectedCount < numberOfTiles) {
+                const randomIndex = Math.floor(Math.random() * buttons.length);
+                const randomButton = buttons[randomIndex];
+                if (!randomButton.classList.contains('selected')) {
+                    randomButton.classList.add('selected');
+                    selectedCount++;
+                }
+            }
+            updateMultipliers();
+        });
+
+        // Function to check if the stream is live and update the color of the LIVE text
+        async function checkIfLive() {
+            try {
+                const response = await fetch('https://kick.com/api/v1/channels/enjayy');
+                const data = await response.json();
+
+                const isLive = data.livestream && data.livestream.is_live;
+                const statusText = document.getElementById('live-status-text');
+
+                if (isLive) {
+                    statusText.style.color = 'green';
+                } else {
+                    statusText.style.color = 'red';
+                }
+            } catch (error) {
+                console.error('Error fetching live status:', error);
+                const statusText = document.getElementById('live-status-text');
+                statusText.style.color = 'grey';
+            }
+        }
+
+        // Check the live status when the page loads.
+        window.onload = checkIfLive;
+
+        // Refresh the status every minute:
+        setInterval(checkIfLive, 60000);
+    </script>
+</body>
+</html>
