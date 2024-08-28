@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gamble Assist</title>
+    <link rel="icon" href="favicon.png" type="image/png">
+</head>
+<body>
+    <div class="header-links">
+        <a href="https://www.youtube.com/@imenjayy" target="_blank">Enjayy's Youtube</a>
+        <a href="https://discord.gg/enjayy" target="_blank">Enjayy's Discord</a>
+        <a href="http://kick.com/enjayy" target="_blank">
+            Enjayy's Kick
+            <span id="live-status-text">LIVE</span>
+        </a>
+        <a href="http://stake.com/?c=penny" target="_blank">Code PENNY on Stake</a>
+    </div>
+    <div class="announcement">
+        <strong>Updates Posted in Discord</strong>
+    </div>
+    <div class="container">
+        <h1 class="header">Mines Assistant</h1>
+        <div class="wrapper">
+            <div>
+                <form id="minesForm">
+                    <div class="form-group">
+                        <label for="mines">Number of Mines:</label>
+                        <input type="number" id="mines" name="mines" min="1" max="24" required>
+                        <label for="diamonds">Number of Diamonds:</label>
+                        <input type="number" id="diamonds" name="diamonds" min="1" max="25" required>
+                        <label for="betSize">Bet Size:</label>
+                        <input type="number" id="betSize" name="betSize" step="0.01" min="0.01" required>
+                        <button type="button" onclick="doubleBet()">2x</button>
+                        <button type="button" onclick="halveBet()">1/2</button>
+                        <button type="button" onclick="generateMinesBoard()">Generate Mines Board</button>
+                        <button type="button" id="randomizeButton" onclick="randomizeMinesAndDiamonds()">Randomize</button>
+                    </div>
+                </form>
+                <div id="minesBoard"></div>
+                <div id="minesResults"></div>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        <strong>Made by Dave</strong>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
