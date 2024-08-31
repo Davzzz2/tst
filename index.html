@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Website with Chat</title>
     <style>
+        /* Add your existing CSS here */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -102,6 +103,34 @@
             background-color: white;
             color: black;
         }
+
+        #username-prompt {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+            z-index: 10;
+        }
+
+        #username-input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        #username-button {
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
     </style>
 </head>
 <body>
@@ -123,7 +152,34 @@
 
     <button id="chat-button">💬 Chat</button>
 
-    <script>
+    <div id="username-prompt">
+        <input type="text" id="username-input" placeholder="Enter your name...">
+        <button id="username-button">Join Chat</button>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+        import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCwPkMt5uPh_ybmUjhwOkGPUyhGnO9QALA",
+            authDomain: "chat-8a6bc.firebaseapp.com",
+            projectId: "chat-8a6bc",
+            storageBucket: "chat-8a6bc.appspot.com",
+            messagingSenderId: "920001544760",
+            appId: "1:920001544760:web:df1e0b4a5a705cd3929ccd",
+            measurementId: "G-2SPDHQWR1V"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        let username = '';
+
         document.getElementById('chat-button').addEventListener('click', function() {
             const chatContainer = document.getElementById('chat-container');
             const content = document.getElementById('content');
@@ -134,6 +190,15 @@
             } else {
                 chatContainer.style.transform = 'translateX(0%)';
                 content.style.transform = 'translateX(-300px)';
+            }
+        });
+
+        document.getElementById('username-button').addEventListener('click', function() {
+            const input = document.getElementById('username-input');
+            if (input.value.trim() !== '') {
+                username = input.value.trim();
+                document.getElementById('username-prompt').style.display = 'none';
+                document.getElementById('chat-container').style.display = 'flex';
             }
         });
 
@@ -152,22 +217,29 @@
             const message = inputField.value.trim();
 
             if (message !== '') {
-                const chatBox = document.getElementById('chat-box');
-
-                // Create a new message element
-                const messageElement = document.createElement('div');
-                messageElement.textContent = message;
-
-                // Append the message to the chat box
-                chatBox.appendChild(messageElement);
-
-                // Scroll to the bottom of the chat box
-                chatBox.scrollTop = chatBox.scrollHeight;
-
-                // Clear the input field
+                const chatRef = ref(database, 'chats');
+                push(chatRef, {
+                    name: username,
+                    message: message,
+                    timestamp: Date.now()
+                });
                 inputField.value = '';
             }
         }
+
+        const chatBox = document.getElementById('chat-box');
+        const chatRef = ref(database, 'chats');
+        onChildAdded(chatRef, (snapshot) => {
+            const data = snapshot.val();
+            const messageElement = document.createElement('div');
+            messageElement.textContent = `${data.name}: ${data.message}`;
+            chatBox.appendChild(messageElement);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        });
+
+        window.onload = function() {
+            document.getElementById('username-prompt').style.display = 'block';
+        };
     </script>
 </body>
 </html>
