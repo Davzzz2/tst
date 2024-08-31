@@ -3,30 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gamble Assist</title>
+    <title>Website with Chat</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            background-color: black;
-            color: #ecf0f1;
             margin: 0;
-            text-align: center;
+            padding: 0;
+            display: flex;
+            overflow-x: hidden;
         }
 
-        .header {
-            font-size: 2.5em;
-            margin-bottom: 40px;
+        #content {
+            width: 100%;
+            transition: transform 0.3s ease;
+        }
+
+        #chat-container {
+            position: fixed;
+            right: 0;
+            top: 0;
+            width: 300px;
+            height: 100%;
+            background-color: #fff;
+            border-left: 1px solid #ccc;
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #chat-box {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+            border-bottom: 1px solid #ddd;
+        }
+
+        #chat-input {
+            border: none;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        #send-button {
+            padding: 10px;
+            background-color: #007bff;
             color: white;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        #chat-button {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 50%;
+            font-size: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        #chat-button:hover {
+            background-color: #0056b3;
+        }
+
+        .header img {
+            max-width: 100%;
+            height: auto;
         }
 
         .nav-links {
             display: flex;
             gap: 20px;
+            padding: 15px;
         }
 
         .nav-button {
@@ -37,7 +95,7 @@
             color: white;
             text-decoration: none;
             font-size: 1.2em;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            transition: background-color 0.3s ease;
         }
 
         .nav-button:hover {
@@ -47,10 +105,69 @@
     </style>
 </head>
 <body>
-    <h1 class="header">Gamble Assist</h1>
-    <div class="nav-links">
-        <a href="Mines/index.html" class="nav-button">Mines Assistant</a>
-        <a href="Keno/index.html" class="nav-button">Keno Assistant</a>
+    <div id="content">
+        <div class="header">
+            <img src="gamble_assist.png" alt="Gamble Assist">
+        </div>
+        <div class="nav-links">
+            <a href="Mines/index.html" class="nav-button">Mines Assistant</a>
+            <a href="Keno/index.html" class="nav-button">Keno Assistant</a>
+        </div>
     </div>
+
+    <div id="chat-container">
+        <div id="chat-box"></div>
+        <input type="text" id="chat-input" placeholder="Type a message...">
+        <button id="send-button">Send</button>
+    </div>
+
+    <button id="chat-button">💬 Chat</button>
+
+    <script>
+        document.getElementById('chat-button').addEventListener('click', function() {
+            const chatContainer = document.getElementById('chat-container');
+            const content = document.getElementById('content');
+
+            if (chatContainer.style.transform === 'translateX(0%)') {
+                chatContainer.style.transform = 'translateX(100%)';
+                content.style.transform = 'translateX(0)';
+            } else {
+                chatContainer.style.transform = 'translateX(0%)';
+                content.style.transform = 'translateX(-300px)';
+            }
+        });
+
+        document.getElementById('send-button').addEventListener('click', function() {
+            sendMessage();
+        });
+
+        document.getElementById('chat-input').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        function sendMessage() {
+            const inputField = document.getElementById('chat-input');
+            const message = inputField.value.trim();
+
+            if (message !== '') {
+                const chatBox = document.getElementById('chat-box');
+
+                // Create a new message element
+                const messageElement = document.createElement('div');
+                messageElement.textContent = message;
+
+                // Append the message to the chat box
+                chatBox.appendChild(messageElement);
+
+                // Scroll to the bottom of the chat box
+                chatBox.scrollTop = chatBox.scrollHeight;
+
+                // Clear the input field
+                inputField.value = '';
+            }
+        }
+    </script>
 </body>
 </html>
