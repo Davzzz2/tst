@@ -3,243 +3,279 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Website with Chat</title>
+    <title>Rank Up and Mini Benefits</title>
+    <link rel="icon" href="pennypts.ico" type="image/x-icon">
     <style>
-        /* Add your existing CSS here */
+        /* Define the color scheme */
+        :root {
+            --cyber-blue: #000428;
+            --neon-blue: #00f7ff;
+            --dark-blue: #004e92;
+            --light-blue: #2196f3;
+            --stake-white: #ffffff;
+            --glow-blue: rgba(0, 247, 255, 0.5);
+        }
+
+        /* General Styling */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            display: flex;
-            overflow-x: hidden;
-        }
-
-        #content {
-            width: 100%;
-            transition: transform 0.3s ease;
-        }
-
-        #chat-container {
-            position: fixed;
-            right: 0;
-            top: 0;
-            width: 300px;
-            height: 100%;
-            background-color: #fff;
-            border-left: 1px solid #ccc;
-            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
-            transform: translateX(100%);
-            transition: transform 0.3s ease;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--cyber-blue), var(--dark-blue));
+            color: var(--stake-white);
             display: flex;
             flex-direction: column;
+            align-items: center;
+            text-align: center;
         }
 
-        #chat-box {
-            flex: 1;
-            padding: 10px;
+        /* Header Styling */
+        h1 {
+            margin-top: 120px;
+            font-size: 2.5em;
+        }
+
+        /* Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        table, th, td {
+            border: 1px solid var(--neon-blue);
+        }
+
+        th, td {
+            padding: 12px 20px;
+            text-align: center;
+            color: var(--stake-white);
+            font-size: 1.1em;
+        }
+
+        th {
+            background-color: var(--dark-blue);
+        }
+
+        td {
+            background-color: rgba(0, 0, 0, 0.3);
+        }
+
+        /* Scrollable Table */
+        .table-container {
+            width: 80%;
+            max-width: 1000px;
+            margin-top: 40px;
             overflow-y: auto;
-            border-bottom: 1px solid #ddd;
+            max-height: 700px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 247, 255, 0.2);
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
         }
 
-        #chat-input {
-            border: none;
-            padding: 10px;
-            border-top: 1px solid #ddd;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        #send-button {
-            padding: 10px;
-            background-color: #007bff;
+        .info-message {
+            display: none;
+            background-color: rgba(0, 0, 0, 0.7);
             color: white;
-            border: none;
-            cursor: pointer;
-            width: 100%;
-            box-sizing: border-box;
+            padding: 5px 5px;
+            font-size: 0.9em;
+            border-radius: 10px;
+            max-width: 400px;
+            text-align: center;
+            margin-top: 20px;
+            position: absolute;
+            top: 150px;
+            left: 39%;
+            z-index: 9999;
         }
 
-        #chat-button {
+        .info-icon {
+            cursor: pointer;
+            font-weight: bold;
+            color: var(--neon-blue);
+            font-size: 1.3em;
+            margin-left: 8px;
+            border: none;
+            background-color: transparent;
+            padding: 5px 10px;
+        }
+
+        .cyber-navbar {
+            background: rgba(0, 4, 40, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
             position: fixed;
-            top: 10px;
-            right: 10px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-            border-radius: 50%;
-            font-size: 20px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            top: 1rem;
+            left: 15%;
+            right: 15%;
+            z-index: 1000;
+            border-bottom: 1px solid var(--neon-blue);
+            box-shadow: 0 0 20px rgba(0, 247, 255, 0.2);
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        #chat-button:hover {
-            background-color: #0056b3;
-        }
-
-        .header img {
-            max-width: 100%;
-            height: auto;
+        .nav-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
         }
 
         .nav-links {
             display: flex;
-            gap: 20px;
-            padding: 15px;
+            gap: 2.5rem;
         }
 
-        .nav-button {
-            padding: 15px 25px;
-            border: 2px solid white;
-            border-radius: 10px;
-            background-color: black;
-            color: white;
+        .nav-link {
+            color: var(--stake-white);
             text-decoration: none;
-            font-size: 1.2em;
-            transition: background-color 0.3s ease;
+            font-weight: 600;
+            font-size: 1.3rem;
+            transition: all 0.3s ease;
         }
 
-        .nav-button:hover {
-            background-color: white;
-            color: black;
+        .nav-link:hover {
+            color: var(--neon-blue);
         }
 
-        #username-prompt {
-            display: none;
+        .nav-logo {
+            height: 45px;
+            filter: drop-shadow(0 0 10px var(--glow-blue));
+        }
+
+        /* Social Links */
+        .social-links {
             position: fixed;
+            right: 10px;
             top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: white;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-            border-radius: 5px;
-            z-index: 10;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            z-index: 1000;
         }
 
-        #username-input {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
+        .social-link {
+            width: 60px;
+            height: 60px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+            transition: transform 0.3s ease;
         }
 
-        #username-button {
-            padding: 10px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            cursor: pointer;
-            width: 100%;
+        .social-link:hover {
+            transform: scale(1.1);
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 12px;
+            background-color: #000000;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: var(--neon-blue);
+            border-radius: 10px;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+                margin-top: 100px;
+            }
+
+            .cyber-navbar {
+                flex-direction: column;
+                padding: 0.5rem;
+                top: 0;
+                left: 0;
+                right: 0;
+                margin: 0;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-link {
+                font-size: 1rem;
+            }
+
+            .table-container {
+                width: 95%;
+                max-height: 400px;
+            }
+
+            .info-message {
+                left: 10%;
+                top: 120px;
+                max-width: 90%;
+            }
+
+            .social-links {
+                right: 0;
+                bottom: 20px;
+                top: auto;
+                flex-direction: row;
+                width: 100%;
+                gap: 0.5rem;
+                justify-content: space-around;
+            }
+
+            .social-link {
+                width: 50px;
+                height: 50px;
+            }
         }
     </style>
 </head>
 <body>
-    <div id="content">
-        <div class="header">
-            <img src="gamble_assist.png" alt="Gamble Assist">
+
+    <!-- Navbar -->
+    <nav class="cyber-navbar">
+        <div class="nav-container">
+            <img src="stake.webp" alt="Stake" class="nav-logo">
+            <div class="nav-links">
+                <a href="../home.html" class="nav-link">Home</a>
+                <a href="../leaderboard/index.html" class="nav-link">Leaderboard</a>
+                <a href="../StreamRewards/index.html" class="nav-link">Stream Rewards</a>
+            </div>
         </div>
-        <div class="nav-links">
-            <a href="Mines/index.html" class="nav-button">Mines Assistant</a>
-            <a href="Keno/index.html" class="nav-button">Keno Assistant</a>
-        </div>
+    </nav>
+
+    <h1>Rank Up and Mini Benefits</h1>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>RANK</th>
+                    <th>WAGER</th>
+                    <th>Reward</th>
+                    <th>TOTAL</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Mini Benefit</td><td>$5,000</td><td>$2.5</td><td>$2.5</td></tr>
+            </tbody>
+        </table>
     </div>
 
-    <div id="chat-container">
-        <div id="chat-box"></div>
-        <input type="text" id="chat-input" placeholder="Type a message...">
-        <button id="send-button">Send</button>
-    </div>
-
-    <button id="chat-button">💬 Chat</button>
-
-    <div id="username-prompt">
-        <input type="text" id="username-input" placeholder="Enter your name...">
-        <button id="username-button">Join Chat</button>
-    </div>
-
-    <!-- Firebase SDK -->
-    <script type="module">
-        // Import the functions you need from the SDKs you need
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
-        import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
-
-        // Your web app's Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyCwPkMt5uPh_ybmUjhwOkGPUyhGnO9QALA",
-            authDomain: "chat-8a6bc.firebaseapp.com",
-            projectId: "chat-8a6bc",
-            storageBucket: "chat-8a6bc.appspot.com",
-            messagingSenderId: "920001544760",
-            appId: "1:920001544760:web:df1e0b4a5a705cd3929ccd",
-            measurementId: "G-2SPDHQWR1V"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
-
-        let username = '';
-
-        document.getElementById('chat-button').addEventListener('click', function() {
-            const chatContainer = document.getElementById('chat-container');
-            const content = document.getElementById('content');
-
-            if (chatContainer.style.transform === 'translateX(0%)') {
-                chatContainer.style.transform = 'translateX(100%)';
-                content.style.transform = 'translateX(0)';
-            } else {
-                chatContainer.style.transform = 'translateX(0%)';
-                content.style.transform = 'translateX(-300px)';
-            }
-        });
-
-        document.getElementById('username-button').addEventListener('click', function() {
-            const input = document.getElementById('username-input');
-            if (input.value.trim() !== '') {
-                username = input.value.trim();
-                document.getElementById('username-prompt').style.display = 'none';
-                document.getElementById('chat-container').style.display = 'flex';
-            }
-        });
-
-        document.getElementById('send-button').addEventListener('click', function() {
-            sendMessage();
-        });
-
-        document.getElementById('chat-input').addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') {
-                sendMessage();
-            }
-        });
-
-        function sendMessage() {
-            const inputField = document.getElementById('chat-input');
-            const message = inputField.value.trim();
-
-            if (message !== '') {
-                const chatRef = ref(database, 'chats');
-                push(chatRef, {
-                    name: username,
-                    message: message,
-                    timestamp: Date.now()
-                });
-                inputField.value = '';
-            }
+    <script>
+        function toggleInfoMessage() {
+            var message = document.querySelector('.info-message');
+            message.style.display = message.style.display === 'block' ? 'none' : 'block';
         }
-
-        const chatBox = document.getElementById('chat-box');
-        const chatRef = ref(database, 'chats');
-        onChildAdded(chatRef, (snapshot) => {
-            const data = snapshot.val();
-            const messageElement = document.createElement('div');
-            messageElement.textContent = `${data.name}: ${data.message}`;
-            chatBox.appendChild(messageElement);
-            chatBox.scrollTop = chatBox.scrollHeight;
-        });
-
-        window.onload = function() {
-            document.getElementById('username-prompt').style.display = 'block';
-        };
     </script>
 </body>
 </html>
